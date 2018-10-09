@@ -12,6 +12,8 @@ return [
     | any other location as required by the application or its packages.
     |
     */
+    //工厂文件默认会是英文，修改成中文
+    'faker_locale' => 'zh_CN',
 
     'name' => env('APP_NAME', 'Laravel'),
 
