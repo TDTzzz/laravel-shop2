@@ -19,7 +19,6 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('products', 'ProductsController@index')->name('products.index');
-Route::get('products/{product}', 'ProductsController@show')->name('products.show');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/email_verification/send', 'EmailVerificationController@send')->name('email_verification.send');
@@ -37,6 +36,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('products', 'ProductsController@index')->name('products.index');
         Route::post('products/{product}/favorite', 'ProductsController@favor')->name('products.favor');
         Route::delete('products/{product}/favorite', 'ProductsController@disfavor')->name('products.disfavor');
+        Route::get('products/favorites', 'ProductsController@favorites')->name('products.favorites');
     });
     // 结束
 });
+
+Route::get('products/{product}', 'ProductsController@show')->name('products.show');
+

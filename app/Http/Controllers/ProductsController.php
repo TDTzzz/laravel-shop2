@@ -12,17 +12,17 @@ class ProductsController extends Controller
     public function index(Request $request)
     {
         //创建一个查询构造器
-        $builder=Product::query()->where('on_sale',true);
+        $builder = Product::query()->where('on_sale', true);
         //判断是否有search参数，有的话代表是模糊搜索
-        if($search=$request->input('search','')){
-            $like='%'.$search.'%';
+        if ($search = $request->input('search', '')) {
+            $like = '%' . $search . '%';
             //模糊搜索商品标题，商品详情，SKU标题，SKU描述
-            $builder->where(function ($query) use ($like){
-                $query->where('title','like',$like)
-                    ->orWhere('description','like',$like)
-                    ->orWhereHas('skus',function ($query) use ($like){
-                        $query->where('title','like',$like)
-                            ->orWhere('description','like',$like);
+            $builder->where(function ($query) use ($like) {
+                $query->where('title', 'like', $like)
+                    ->orWhere('description', 'like', $like)
+                    ->orWhereHas('skus', function ($query) use ($like) {
+                        $query->where('title', 'like', $like)
+                            ->orWhere('description', 'like', $like);
                     });
             });
         }
@@ -44,9 +44,9 @@ class ProductsController extends Controller
 
         return view('products.index', [
             'products' => $products,
-            'filters'  => [
+            'filters' => [
                 'search' => $search,
-                'order'  => $order,
+                'order' => $order,
             ],
         ]);
     }
@@ -60,7 +60,7 @@ class ProductsController extends Controller
 
         $favored = false;
         // 用户未登录时返回的是 null，已登录时返回的是对应的用户对象
-        if($user = $request->user()) {
+        if ($user = $request->user()) {
             // 从当前用户已收藏的商品中搜索 id 为当前商品 id 的商品
             // boolval() 函数用于把值转为布尔值
             $favored = boolval($user->favoriteProducts()->find($product->id));
@@ -87,6 +87,12 @@ class ProductsController extends Controller
         $user->favoriteProducts()->detach($product);
 
         return [];
+    }
+
+    public function favorites(Request $request)
+    {
+        $products = $request->user()->favoriteProducts()->paginate(16);
+        return view('products.favorites', ['products' => $products]);
     }
 
 }
